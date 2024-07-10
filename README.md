@@ -1,2 +1,2 @@
 # service-codewars-analyze
-Микросервис 
+Микросервис для сбора и агрегации данных их Codewars
