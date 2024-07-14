@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log"
 
-	get_unique_names "github.com/dozddd/service-codewars-analyze.git/internal/usecase/get_uique_names"
+	get_unique_names "github.com/dozddd/service-codewars-analyze/internal/usecase/get_uique_names"
 )
 
 func main() {

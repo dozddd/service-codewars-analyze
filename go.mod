@@ -1,4 +1,4 @@
-module github.com/dozddd/service-codewars-analyze.git
+module github.com/dozddd/service-codewars-analyze
 
 go 1.22.3
 
