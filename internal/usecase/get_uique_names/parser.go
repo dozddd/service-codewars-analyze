@@ -1,40 +1,29 @@
-package main
+package get_unique_names
 
 import (
 	"context"
 	"fmt"
-	"log"
-	"sync"
 
 	"github.com/gocolly/colly"
 	"golang.org/x/sync/errgroup"
 )
 
 const (
-	kataURL     = "https://www.codewars.com/users/leaderboard/kata"
-	authoredURL = "https://www.codewars.com/users/leaderboard/authored"
-	ranksURL    = "https://www.codewars.com/users/leaderboard/ranks"
-	leadersURL  = "https://www.codewars.com/users/leaderboard"
+	KataURL     codeWarsUrl = "https://www.codewars.com/users/leaderboard/kata"
+	AuthoredURL codeWarsUrl = "https://www.codewars.com/users/leaderboard/authored"
+	RanksURL    codeWarsUrl = "https://www.codewars.com/users/leaderboard/ranks"
+	LeadersURL  codeWarsUrl = "https://www.codewars.com/users/leaderboard"
 )
 
-func main() {
-	parser := New()
-	ctx := context.Background()
-
-	names, err := parser.GetAllUniqueNames(ctx)
-	if err != nil {
-		log.Fatalf("Error parsing names from leaders: %v", err)
-	}
-	fmt.Println("Уникальные ники из всех таблиц:", names)
-}
+type codeWarsUrl string
 
 type Parser struct {
-	urls []string
+	urls []codeWarsUrl
 }
 
-func New() *Parser {
+func New(url ...codeWarsUrl) *Parser {
 	return &Parser{
-		urls: []string{kataURL, authoredURL, ranksURL, leadersURL},
+		urls: url,
 	}
 }
 
@@ -62,26 +51,23 @@ func (p *Parser) getNamesLeaders(_ context.Context, url string) ([]string, error
 func (p *Parser) GetAllUniqueNames(ctx context.Context) ([]string, error) {
 	var g errgroup.Group
 	uniqueNames := make(map[string]struct{})
-	mt := sync.Mutex{}
 
 	for _, url := range p.urls {
 		url := url
 		g.Go(func() error {
-			names, err := p.getNamesLeaders(ctx, url)
+			names, err := p.getNamesLeaders(ctx, string(url))
 			if err != nil {
-				return err
+				return fmt.Errorf("p.getNamesLeaders: %w", err)
 			}
-			mt.Lock()
 			for _, name := range names {
 				uniqueNames[name] = struct{}{}
 			}
-			mt.Unlock()
 			return nil
 		})
 	}
 
 	if err := g.Wait(); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("g.Wait: %w", err)
 	}
 
 	var uniqueNamesSlice []string

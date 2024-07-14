@@ -1,4 +1,4 @@
-package main
+package get_unique_names
 
 import (
 	"context"
@@ -53,7 +53,7 @@ func TestGetNamesLeaders(t *testing.T) {
 			}))
 			defer server.Close()
 
-			parser := &Parser{urls: []string{server.URL}}
+			parser := &Parser{urls: []codeWarsUrl{codeWarsUrl(server.URL)}}
 			names, err := parser.getNamesLeaders(context.Background(), server.URL)
 
 			if tCase.expectedErr != nil {
@@ -97,6 +97,12 @@ func TestGetAllUniqueNames(t *testing.T) {
 			expected:    []string{},
 			expectedErr: nil,
 		},
+		{
+			name:        "MultipleFiles",
+			htmlFiles:   []string{"test_data/success.html", "test_data/duplicates.html"},
+			expected:    []string{"user1", "user2", "user3"},
+			expectedErr: nil,
+		},
 	}
 
 	for _, tCase := range tCase {
@@ -113,9 +119,9 @@ func TestGetAllUniqueNames(t *testing.T) {
 				servers = append(servers, server)
 			}
 
-			var urls []string
+			var urls []codeWarsUrl
 			for _, server := range servers {
-				urls = append(urls, server.URL)
+				urls = append(urls, codeWarsUrl(server.URL))
 			}
 
 			parser := &Parser{urls: urls}
