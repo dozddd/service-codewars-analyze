@@ -11,7 +11,7 @@ import (
 )
 
 func TestGetNamesLeaders(t *testing.T) {
-	tCase := []struct {
+	tCases := []struct {
 		name        string
 		htmlFile    string
 		expected    []string
@@ -43,7 +43,7 @@ func TestGetNamesLeaders(t *testing.T) {
 		},
 	}
 
-	for _, tCase := range tCase {
+	for _, tCase := range tCases {
 		t.Run(tCase.name, func(t *testing.T) {
 			htmlData, err := os.ReadFile(tCase.htmlFile)
 			assert.NoError(t, err)
@@ -67,7 +67,7 @@ func TestGetNamesLeaders(t *testing.T) {
 }
 
 func TestGetAllUniqueNames(t *testing.T) {
-	tCase := []struct {
+	tCases := []struct {
 		name        string
 		htmlFiles   []string
 		expected    []string
@@ -105,7 +105,7 @@ func TestGetAllUniqueNames(t *testing.T) {
 		},
 	}
 
-	for _, tCase := range tCase {
+	for _, tCase := range tCases {
 		t.Run(tCase.name, func(t *testing.T) {
 			var servers []*httptest.Server
 			for _, htmlFile := range tCase.htmlFiles {
